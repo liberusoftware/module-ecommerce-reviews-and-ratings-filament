@@ -1,0 +1,48 @@
+{
+    "name": "liberusoftware/ecommerce-reviews-and-ratings-filament",
+    "description": "The moderation panel for shopper reviews: a decision queue, a flag queue, merchant replies and a coverage widget, over the reviews-and-ratings domain package.",
+    "type": "liberu-module",
+    "license": "MIT",
+    "version": "0.1.0",
+    "require": {
+        "php": "^8.5",
+        "filament/filament": "^5.6",
+        "illuminate/contracts": "^13.0",
+        "illuminate/database": "^13.0",
+        "illuminate/pagination": "^13.0",
+        "illuminate/support": "^13.0",
+        "liberusoftware/ecommerce-reviews-and-ratings": "^0.1"
+    },
+    "require-dev": {
+        "liberusoftware/package-testbench": "^1.7",
+        "pestphp/pest": "^5.0"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/liberusoftware/module-ecommerce-reviews-and-ratings"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Liberu\\Ecommerce\\ReviewsAndRatings\\Filament\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Liberu\\Ecommerce\\ReviewsAndRatings\\Filament\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "liberu": {
+            "name": "ecommerce-reviews-and-ratings-filament"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

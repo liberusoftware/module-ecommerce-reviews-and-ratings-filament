@@ -1,0 +1,34 @@
+{
+    "name": "ecommerce-reviews-and-ratings-filament",
+    "version": "0.1.0",
+    "description": "The staff moderation surface for reviews and ratings: the decision queue, the flag queue, merchant replies and the coverage of the published aggregate.",
+    "category": "presentation",
+    "provider": "Liberu\\Ecommerce\\ReviewsAndRatings\\Filament\\ReviewsAndRatingsFilamentServiceProvider",
+    "features": [
+        "A moderation queue filtered by derived display state, urgent screening first",
+        "Edited-after-approval flagged on every row a moderator sees",
+        "Moderation decisions taken from closed enums with no free text anywhere",
+        "A reader flag queue that never shows who reported what",
+        "Merchant replies written through the domain, refused when screening is unbound",
+        "Read-only expression detail carrying the whole moderation history",
+        "A coverage widget naming the displayed and recorded populations apart",
+        "Verified, unverified and unknown kept apart all the way to the badge",
+        "No author reference or display name is searchable or filterable",
+        "Every unpublished resource and relation-manager ability refused by name"
+    ],
+    "presentation": {
+        "filament": {
+            "staff": [
+                "Liberu\\Ecommerce\\ReviewsAndRatings\\Filament\\ReviewsAndRatingsPlugin",
+                "Liberu\\Ecommerce\\ReviewsAndRatings\\Filament\\Resources\\Expressions\\ExpressionResource",
+                "Liberu\\Ecommerce\\ReviewsAndRatings\\Filament\\Resources\\Flags\\FlagResource",
+                "Liberu\\Ecommerce\\ReviewsAndRatings\\Filament\\Widgets\\RatingCoverageWidget"
+            ]
+        }
+    },
+    "requires": {
+        "packages": {
+            "liberusoftware/ecommerce-reviews-and-ratings": "^0.1"
+        }
+    }
+}

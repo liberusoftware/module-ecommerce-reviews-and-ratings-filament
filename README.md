@@ -1,84 +1,71 @@
-# Ecommerce: Reviews and Ratings Filament
+# Reviews and Ratings — Filament
 
-> This optional Filament 5 presentation package presents exactly one independent domain module. It contributes reusable resources, pages, widgets, schemas, tables, infolists, and actions to application-owned panels while delegating authorization, validation, tenancy, persistence, and business rules to the ecommerce-reviews-and-ratings public bounda
+The staff moderation surface for
+[`liberusoftware/ecommerce-reviews-and-ratings`](https://github.com/liberusoftware/module-ecommerce-reviews-and-ratings).
 
-[Software](https://liberusoftware.com) ·
-[Hosting](https://liberuhosting.com) ·
-[Services](https://liberuservices.com) ·
-[Liberu Group](https://liberugroup.com)
+**The moderation queue is the module.** Everything else here exists to serve it.
 
-![PHP](https://img.shields.io/badge/PHP-8.5-777BB4?logo=php&logoColor=white) ![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white) ![Filament](https://img.shields.io/badge/Filament-5-FDAE4B)
-[![Latest release](https://img.shields.io/github/v/release/liberusoftware/module-ecommerce-reviews-and-ratings-filament?sort=semver)](https://github.com/liberusoftware/module-ecommerce-reviews-and-ratings-filament/releases/latest) [![Tests](https://github.com/liberusoftware/module-ecommerce-reviews-and-ratings-filament/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/liberusoftware/module-ecommerce-reviews-and-ratings-filament/actions/workflows/tests.yml)
+The application this was extracted from has one moderation control: a boolean
+toggle on a review edit form. Approving, retracting and re-approving all leave
+the same row state, nobody can say who did any of it, and a review edited after
+approval looks exactly like one that was never touched. This package is what a
+moderator actually needs instead.
 
-## Features
+## What it gives a panel
 
-- Fully compatible with **Laravel 13**, **PHP 8.5**, and **Pest 5**.
-- Built following the domain-driven design guidelines of the Liberu architecture.
-- Reusable, presenting a clean public contract and boundaries.
-- Adheres to the strict database, security, and authorization standards of Liberu.
+| Surface | What it is for |
+| --- | --- |
+| **Moderation queue** | Expressions filtered by derived display state, urgent screening first, **edited-after-approval flagged on every row** |
+| **Expression detail** | Read-only: what was said, who said it, what the machine found, the whole custody chain, and every decision anybody made |
+| **Decision action** | An outcome and a reason, both from closed enums. No free text. |
+| **Merchant reply** | A reply written through the domain — screened, moderated, and signed with the merchant |
+| **Report queue** | What readers have flagged, and never who flagged it |
+| **Coverage widget** | The displayed and the recorded aggregates side by side, each naming its population |
 
-## Requirements
-
-- **PHP 8.5**
-- **Composer 2**
-- A supported database (e.g. MySQL, PostgreSQL, SQLite)
-
-## Quick start
-
-To install this package via Composer, run:
+## Installing
 
 ```bash
-composer require liberusoftware/module-ecommerce-reviews-and-ratings-filament
+composer require liberusoftware/ecommerce-reviews-and-ratings-filament
 ```
+
+The domain package is not on Packagist, so the host adds a VCS repository entry
+for it as well. See [docs/adoption.md](docs/adoption.md) for the whole of it.
+
+Then attach the plugin to the one panel that should carry a moderation queue:
+
+```php
+use Liberu\Ecommerce\ReviewsAndRatings\Filament\ReviewsAndRatingsPlugin;
+
+$panel->plugin(
+    ReviewsAndRatingsPlugin::make()
+        ->tenantUsing(fn (): string => Filament::getTenant()->getKey())
+        ->replyingAs(fn (): string => config('app.name')),
+);
+```
+
+Installing this package registers no panel, no resource and no page. A package
+that pushed a moderation queue onto every panel would put shoppers' speech in
+front of whoever the application happened to let into any of them.
+
+## What it will not do
+
+- It will not **edit an expression**. A review is a historical fact; an edit is
+  a new expression that supersedes the old one, and only its author makes one.
+- It will not **search or filter by an author**. Search terms and filter state
+  both persist into the query string, and an author reference or display name is
+  the sensitive thing in this module. Neither is even present in a table row.
+- It will not **put a row id in a URL**. Records bind by their opaque reference.
+- It will not **dereference a product**. It shows the product reference; a host
+  that wants a name wires one in.
+- It will not **hold an opinion**. Every published figure comes from the domain's
+  own queries, and the panel names the population each one summarises.
 
 ## Documentation
 
-- [Liberu Main Documentation](https://github.com/liberusoftware/documentation)
-- [Architecture & Standards Index](https://github.com/liberusoftware/documentation/tree/main/architecture)
+- [docs/domain.md](docs/domain.md) — what each surface shows, and why
+- [docs/adoption.md](docs/adoption.md) — installing, attaching, seams, migrating off the host's own screens
+- [docs/runbook.md](docs/runbook.md) — operating it, and what each refusal means
 
-## Related Liberu Projects
+## Licence
 
-| Project | Repository | Purpose |
-| --- | --- | --- |
-| **Boilerplate** | [liberusoftware/boilerplate-laravel](https://github.com/liberusoftware/boilerplate-laravel) | Shared Laravel application foundation and reference composition |
-| **CMS** | [liberu-cms/cms-laravel](https://github.com/liberu-cms/cms-laravel) | Structured content, publishing, media, multisite, and headless delivery |
-| **CRM** | [liberu-crm/crm-laravel](https://github.com/liberu-crm/crm-laravel) | Customer data, sales, marketing, service, and customer success |
-| **Billing** | [liberu-billing/billing-laravel](https://github.com/liberu-billing/billing-laravel) | Products, subscriptions, invoicing, payments, and provisioning |
-| **Accounting** | [liberu-accounting/accounting-laravel](https://github.com/liberu-accounting/accounting-laravel) | Ledgers, banking, tax, expenses, close, and financial reporting |
-| **Ecommerce** | [liberu-ecommerce/ecommerce-laravel](https://github.com/liberu-ecommerce/ecommerce-laravel) | Catalog, checkout, orders, fulfillment, returns, B2B, and omnichannel commerce |
-| **Control Panel** | [liberu-control-panel/control-panel-laravel](https://github.com/liberu-control-panel/control-panel-laravel) | Hosting, infrastructure, DNS, mail, databases, backups, and security operations |
-| **Automation** | [liberu-automation/automation-laravel](https://github.com/liberu-automation/automation-laravel) | Governed workflows, provider-neutral AI, approvals, and connectors |
-
-## Security
-
-Please do not report security vulnerabilities through public GitHub issues.
-Follow our [Security Policy](https://github.com/liberusoftware/documentation/blob/main/architecture/SECURITY.md) for private reporting and supported versions.
-
-## License
-
-This project is open-source software. You may use, modify, and distribute it
-under the terms described in [LICENSE.md](LICENSE.md).
-
-The linked license text is authoritative; this summary is not legal advice.
-
-## Feedback and contributing
-
-Feedback and contributions are welcome. You can help by reporting reproducible
-bugs, proposing focused enhancements, improving documentation or translations,
-and submitting tested code changes.
-
-Before contributing, please read [CONTRIBUTING.md](https://github.com/liberusoftware/documentation/blob/main/standards/CONTRIBUTING.md) and our
-[Code of Conduct](https://github.com/liberusoftware/documentation/blob/main/architecture/CODE_OF_CONDUCT.md). Search existing issues first, then use
-the appropriate issue template. Pull requests should explain the problem and
-approach, remain focused, include or update tests, pass the required workflows,
-and document user-visible or breaking changes.
-
-## Contributors
-
-Thank you to everyone who helps improve Liberu.
-
-<a href="https://github.com/liberusoftware/module-ecommerce-reviews-and-ratings-filament/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=liberusoftware/module-ecommerce-reviews-and-ratings-filament" alt="Contributors to liberusoftware/module-ecommerce-reviews-and-ratings-filament">
-</a>
-
-[View the full contributors graph](https://github.com/liberusoftware/module-ecommerce-reviews-and-ratings-filament/graphs/contributors).
+MIT. See [LICENSE.md](LICENSE.md).
